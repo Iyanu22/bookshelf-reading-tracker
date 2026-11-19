@@ -1,6 +1,6 @@
 "use client";
 
-import { Compass, Library, LibraryBig, Search, X } from "lucide-react";
+import { BarChart3, Compass, Library, LibraryBig, Search, X } from "lucide-react";
 import Link from "next/link";
 import { Suspense, useRef, type ReactNode } from "react";
 import { useGoalProgress } from "@/lib/store/hooks";
@@ -149,6 +149,10 @@ export function AppShell({ children }: { children: ReactNode }) {
         <Link href="/search" className="flex min-h-14 flex-1 flex-col items-center justify-center gap-0.5 text-xs text-text-secondary">
           <Search aria-hidden size={22} strokeWidth={1.75} />
           Search
+        </Link>
+        <Link href="/stats" className="flex min-h-14 flex-1 flex-col items-center justify-center gap-0.5 text-xs text-text-secondary">
+          <BarChart3 aria-hidden size={22} strokeWidth={1.75} />
+          Stats
         </Link>
       </nav>
 

@@ -69,6 +69,18 @@
   --shadow-lg: 0 12px 20px -4px rgba(44, 36, 32, 0.12), 0 4px 8px -4px rgba(44, 36, 32, 0.06);
   --shadow-book: 0 2px 8px rgba(44, 36, 32, 0.15), 0 1px 3px rgba(44, 36, 32, 0.1);
 
+  /* Data viz — validated with the dataviz skill's validate_palette.js against --color-surface.
+     Series copper passes band/chroma/CVD/contrast; the context gray is deliberately recessive
+     (sub-3:1), so every chart that uses it ships a legend + table view. */
+  --viz-series: #9e5a27;
+  --viz-context: #c4bbb0;
+  --viz-grid: #ebe7e0;
+  --viz-heat-0: #f3f0eb;
+  --viz-heat-1: #d49a63;
+  --viz-heat-2: #b97a44;
+  --viz-heat-3: #985a28;
+  --viz-heat-4: #6c3a14;
+
   --sidebar-width: 15rem;
   --content-max-width: 48rem;
   --library-max-width: 72rem;
@@ -100,6 +112,15 @@
     --color-progress: #d4964a;
     --color-rating: #e0b84a;
 
+    --viz-series: #bf7c36;
+    --viz-context: #625950;
+    --viz-grid: #2e2822;
+    --viz-heat-0: #2e2822;
+    --viz-heat-1: #7a4d2a;
+    --viz-heat-2: #9e6634;
+    --viz-heat-3: #c4884a;
+    --viz-heat-4: #e6ad6c;
+
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
     --shadow-md: 0 4px 8px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.25);
     --shadow-lg: 0 12px 20px -4px rgba(0, 0, 0, 0.5), 0 4px 8px -4px rgba(0, 0, 0, 0.3);
@@ -130,6 +151,15 @@
 
     --color-progress: #d4964a;
     --color-rating: #e0b84a;
+
+    --viz-series: #bf7c36;
+    --viz-context: #625950;
+    --viz-grid: #2e2822;
+    --viz-heat-0: #2e2822;
+    --viz-heat-1: #7a4d2a;
+    --viz-heat-2: #9e6634;
+    --viz-heat-3: #c4884a;
+    --viz-heat-4: #e6ad6c;
 
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
     --shadow-md: 0 4px 8px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.25);

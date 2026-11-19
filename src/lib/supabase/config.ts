@@ -8,4 +8,4 @@ export const isSupabaseConfigured = Boolean(SUPABASE_URL && SUPABASE_KEY);
 export const GUEST_COOKIE = "bookshelf_guest";
 
 /** Routes that need either a signed-in user or an active guest session. */
-export const APP_ROUTES = ["/library", "/shelves", "/books", "/search", "/discover", "/stats", "/settings"];
+export const APP_ROUTES = ["/library", "/shelves", "/books", "/search", "/discover", "/stats", "/year-in-review", "/settings"];
