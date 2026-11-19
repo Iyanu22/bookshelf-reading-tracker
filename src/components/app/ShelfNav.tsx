@@ -1,6 +1,6 @@
 "use client";
 
-import { BookCheck, Bookmark, BookOpen, Library, Plus, Star, type LucideIcon } from "lucide-react";
+import { BookCheck, Bookmark, BookOpen, Compass, Library, Plus, Star, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -121,6 +121,13 @@ export function ShelfNav({ onNavigate }: { onNavigate?: () => void }) {
           icon={Library}
           label="Overview"
           active={pathname === "/library"}
+          onNavigate={onNavigate}
+        />
+        <NavItem
+          href="/discover"
+          icon={Compass}
+          label="Discover"
+          active={pathname === "/discover"}
           onNavigate={onNavigate}
         />
         <NavItem

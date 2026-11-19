@@ -1,0 +1,512 @@
+[
+  {
+    "id": "modern-classics",
+    "title": "Modern classics worth the hype",
+    "blurb": "The books everyone seems to have read — and for good reason.",
+    "books": [
+      {
+        "title": "The Remains of the Day",
+        "authors": [
+          "Kazuo Ishiguro"
+        ],
+        "openLibraryId": "OL59048W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/95742-M.jpg",
+        "pageCount": 254,
+        "publishedYear": 1989,
+        "isbn13": "9780394251349",
+        "isbn10": "3453421604",
+        "matchedTitle": "The Remains of the Day"
+      },
+      {
+        "title": "The Book Thief",
+        "authors": [
+          "Markus Zusak"
+        ],
+        "openLibraryId": "OL5819456W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/15267110-M.jpg",
+        "pageCount": 556,
+        "publishedYear": 1998,
+        "isbn13": "9781741977486",
+        "isbn10": "8426416217",
+        "matchedTitle": "The Book Thief"
+      },
+      {
+        "title": "Life of Pi",
+        "authors": [
+          "Yann Martel"
+        ],
+        "openLibraryId": "OL2827199W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/12840573-M.jpg",
+        "pageCount": 349,
+        "publishedYear": 2000,
+        "isbn13": "9788423335121",
+        "isbn10": "0676973760",
+        "matchedTitle": "Life of Pi"
+      },
+      {
+        "title": "The Kite Runner",
+        "authors": [
+          "Khaled Hosseini"
+        ],
+        "openLibraryId": "OL5781992W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/14846827-M.jpg",
+        "pageCount": 371,
+        "publishedYear": 2003,
+        "isbn13": "9780747573395",
+        "isbn10": "3833305622",
+        "matchedTitle": "The Kite Runner"
+      },
+      {
+        "title": "Station Eleven",
+        "authors": [
+          "Emily St. John Mandel"
+        ],
+        "openLibraryId": "OL17202418W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/7369961-M.jpg",
+        "pageCount": 352,
+        "publishedYear": 2014,
+        "isbn13": "9781489458506",
+        "isbn10": "1596068558",
+        "matchedTitle": "Station Eleven"
+      },
+      {
+        "title": "Never Let Me Go",
+        "authors": [
+          "Kazuo Ishiguro"
+        ],
+        "openLibraryId": "OL59038W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/1047334-M.jpg",
+        "pageCount": 319,
+        "publishedYear": 2005,
+        "isbn13": "9781627652513",
+        "isbn10": "8806231774",
+        "matchedTitle": "Never Let Me Go"
+      }
+    ]
+  },
+  {
+    "id": "around-the-world",
+    "title": "Voices from around the world",
+    "blurb": "Stories that travel — from Umuofia to Macondo to Osaka.",
+    "books": [
+      {
+        "title": "Things Fall Apart",
+        "authors": [
+          "Chinua Achebe"
+        ],
+        "openLibraryId": "OL891786W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/12816943-M.jpg",
+        "pageCount": 192,
+        "publishedYear": 1958,
+        "isbn13": "9780435900014",
+        "isbn10": "0385667833",
+        "matchedTitle": "Things Fall Apart"
+      },
+      {
+        "title": "Half of a Yellow Sun",
+        "authors": [
+          "Chimamanda Ngozi Adichie"
+        ],
+        "openLibraryId": "OL5731542W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/8472660-M.jpg",
+        "pageCount": 500,
+        "publishedYear": 2006,
+        "isbn13": "9784309205519",
+        "isbn10": "1400095204",
+        "matchedTitle": "Half of a Yellow Sun"
+      },
+      {
+        "title": "One Hundred Years of Solitude",
+        "authors": [
+          "Gabriel García Márquez"
+        ],
+        "openLibraryId": "OL43108828W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/15185412-M.jpg",
+        "pageCount": 417,
+        "publishedYear": 1971,
+        "isbn13": null,
+        "isbn10": null,
+        "matchedTitle": "One Hundred Years of Solitude"
+      },
+      {
+        "title": "The God of Small Things",
+        "authors": [
+          "Arundhati Roy"
+        ],
+        "openLibraryId": "OL1052133W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/10513792-M.jpg",
+        "pageCount": 357,
+        "publishedYear": 1997,
+        "isbn13": "9788371503948",
+        "isbn10": "9053335560",
+        "matchedTitle": "The God of Small Things"
+      },
+      {
+        "title": "Pachinko",
+        "authors": [
+          "Min Jin Lee"
+        ],
+        "openLibraryId": "OL17762217W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/8044605-M.jpg",
+        "pageCount": 512,
+        "publishedYear": 2017,
+        "isbn13": "9789029093286",
+        "isbn10": "1786691361",
+        "matchedTitle": "Pachinko"
+      },
+      {
+        "title": "Purple Hibiscus",
+        "authors": [
+          "Chimamanda Ngozi Adichie"
+        ],
+        "openLibraryId": "OL5731538W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/12063933-M.jpg",
+        "pageCount": 307,
+        "publishedYear": 2003,
+        "isbn13": "9782843372810",
+        "isbn10": "8439732945",
+        "matchedTitle": "Purple Hibiscus"
+      }
+    ]
+  },
+  {
+    "id": "developers",
+    "title": "Books developers love",
+    "blurb": "For the craft beyond the code: systems, teams and how computers really work.",
+    "books": [
+      {
+        "title": "Code: The Hidden Language of Computer Hardware and Software",
+        "authors": [
+          "Charles Petzold"
+        ],
+        "openLibraryId": "OL1972516W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/460968-M.jpg",
+        "pageCount": 393,
+        "publishedYear": 1999,
+        "isbn13": "9780735611313",
+        "isbn10": "0735611319",
+        "matchedTitle": "Code"
+      },
+      {
+        "title": "The Phoenix Project",
+        "authors": [
+          "Gene Kim"
+        ],
+        "openLibraryId": "OL16806686W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/9151976-M.jpg",
+        "pageCount": 345,
+        "publishedYear": 2013,
+        "isbn13": "9781950508921",
+        "isbn10": "1942788304",
+        "matchedTitle": "The Phoenix Project"
+      },
+      {
+        "title": "Peopleware",
+        "authors": [
+          "Tom DeMarco"
+        ],
+        "openLibraryId": "OL38240W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/711859-M.jpg",
+        "pageCount": 245,
+        "publishedYear": 1987,
+        "isbn13": "9780932633057",
+        "isbn10": "5932860618",
+        "matchedTitle": "Peopleware"
+      },
+      {
+        "title": "Working Effectively with Legacy Code",
+        "authors": [
+          "Michael Feathers"
+        ],
+        "openLibraryId": "OL5742702W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/86561-M.jpg",
+        "pageCount": 456,
+        "publishedYear": 2004,
+        "isbn13": "9780132931748",
+        "isbn10": "0131177052",
+        "matchedTitle": "Working effectively with legacy code"
+      },
+      {
+        "title": "Code Complete",
+        "authors": [
+          "Steve McConnell"
+        ],
+        "openLibraryId": "OL2722063W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/461500-M.jpg",
+        "pageCount": 914,
+        "publishedYear": 1993,
+        "isbn13": "9781556154843",
+        "isbn10": "1556154844",
+        "matchedTitle": "Code Complete"
+      },
+      {
+        "title": "Structure and Interpretation of Computer Programs",
+        "authors": [
+          "Harold Abelson"
+        ],
+        "openLibraryId": "OL3267304W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/149338-M.jpg",
+        "pageCount": 542,
+        "publishedYear": 1985,
+        "isbn13": "9780070004221",
+        "isbn10": "0262510367",
+        "matchedTitle": "Structure and Interpretation of Computer Programs (SICP)"
+      }
+    ]
+  },
+  {
+    "id": "weekend-reads",
+    "title": "Finish it this weekend",
+    "blurb": "Short, unforgettable books — perfect for getting a reading streak going.",
+    "books": [
+      {
+        "title": "Of Mice and Men",
+        "authors": [
+          "John Steinbeck"
+        ],
+        "openLibraryId": "OL23204W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/14319003-M.jpg",
+        "pageCount": 119,
+        "publishedYear": 1937,
+        "isbn13": "9781616571078",
+        "isbn10": "1537401815",
+        "matchedTitle": "Of Mice and Men"
+      },
+      {
+        "title": "The Old Man and the Sea",
+        "authors": [
+          "Ernest Hemingway"
+        ],
+        "openLibraryId": "OL63073W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/463307-M.jpg",
+        "pageCount": 131,
+        "publishedYear": 1952,
+        "isbn13": "9789723810752",
+        "isbn10": "0684515288",
+        "matchedTitle": "The Old Man and the Sea"
+      },
+      {
+        "title": "Animal Farm",
+        "authors": [
+          "George Orwell"
+        ],
+        "openLibraryId": "OL1168007W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/11261770-M.jpg",
+        "pageCount": 128,
+        "publishedYear": 1945,
+        "isbn13": "9798550366127",
+        "isbn10": "1903362180",
+        "matchedTitle": "Animal Farm"
+      },
+      {
+        "title": "Fahrenheit 451",
+        "authors": [
+          "Ray Bradbury"
+        ],
+        "openLibraryId": "OL103123W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/12993656-M.jpg",
+        "pageCount": 190,
+        "publishedYear": 1953,
+        "isbn13": "9780246635716",
+        "isbn10": "9027406367",
+        "matchedTitle": "Fahrenheit 451"
+      },
+      {
+        "title": "Siddhartha",
+        "authors": [
+          "Hermann Hesse"
+        ],
+        "openLibraryId": "OL872932W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/6562535-M.jpg",
+        "pageCount": 139,
+        "publishedYear": 1922,
+        "isbn13": "9781933652122",
+        "isbn10": "0330234811",
+        "matchedTitle": "Siddhartha"
+      },
+      {
+        "title": "Breakfast at Tiffany's",
+        "authors": [
+          "Truman Capote"
+        ],
+        "openLibraryId": "OL1992167W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/100108-M.jpg",
+        "pageCount": 160,
+        "publishedYear": 1956,
+        "isbn13": "9781850891444",
+        "isbn10": "2070363643",
+        "matchedTitle": "Breakfast at Tiffany's"
+      }
+    ]
+  },
+  {
+    "id": "big-ideas",
+    "title": "Big ideas, beautifully told",
+    "blurb": "Non-fiction that changes how you see the world, without reading like homework.",
+    "books": [
+      {
+        "title": "Guns, Germs, and Steel",
+        "authors": [
+          "Jared Diamond"
+        ],
+        "openLibraryId": "OL276558W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/7884018-M.jpg",
+        "pageCount": 528,
+        "publishedYear": 1997,
+        "isbn13": "9781586638634",
+        "isbn10": "3596149673",
+        "matchedTitle": "Guns, Germs, and Steel"
+      },
+      {
+        "title": "The Sixth Extinction",
+        "authors": [
+          "Elizabeth Kolbert"
+        ],
+        "openLibraryId": "OL16820830W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/7910870-M.jpg",
+        "pageCount": 352,
+        "publishedYear": 2014,
+        "isbn13": "9781408851234",
+        "isbn10": "1442369450",
+        "matchedTitle": "The Sixth Extinction"
+      },
+      {
+        "title": "Freakonomics",
+        "authors": [
+          "Steven D. Levitt"
+        ],
+        "openLibraryId": "OL278022W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/11172914-M.jpg",
+        "pageCount": 320,
+        "publishedYear": 2005,
+        "isbn13": "9788466625128",
+        "isbn10": "8324014470",
+        "matchedTitle": "Freakonomics"
+      },
+      {
+        "title": "The Gene: An Intimate History",
+        "authors": [
+          "Siddhartha Mukherjee"
+        ],
+        "openLibraryId": "OL17762235W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/11320163-M.jpg",
+        "pageCount": 605,
+        "publishedYear": 2016,
+        "isbn13": "9781476733500",
+        "isbn10": "0670087149",
+        "matchedTitle": "The Gene"
+      },
+      {
+        "title": "Being Mortal",
+        "authors": [
+          "Atul Gawande"
+        ],
+        "openLibraryId": "OL17079567W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/8477368-M.jpg",
+        "pageCount": 283,
+        "publishedYear": 2014,
+        "isbn13": "9780385677028",
+        "isbn10": "9863208361",
+        "matchedTitle": "Being Mortal"
+      },
+      {
+        "title": "Outliers",
+        "authors": [
+          "Malcolm Gladwell"
+        ],
+        "openLibraryId": "OL5749847W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/10021591-M.jpg",
+        "pageCount": 320,
+        "publishedYear": 2008,
+        "isbn13": "9780316056281",
+        "isbn10": "0316056286",
+        "matchedTitle": "Outliers"
+      }
+    ]
+  },
+  {
+    "id": "other-worlds",
+    "title": "Worlds to get lost in",
+    "blurb": "Science fiction and fantasy with unforgettable settings.",
+    "books": [
+      {
+        "title": "The Hobbit",
+        "authors": [
+          "J.R.R. Tolkien"
+        ],
+        "openLibraryId": "OL27482W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/14627509-M.jpg",
+        "pageCount": 310,
+        "publishedYear": 1937,
+        "isbn13": "9788422615866",
+        "isbn10": "0320036871",
+        "matchedTitle": "The Hobbit"
+      },
+      {
+        "title": "A Wizard of Earthsea",
+        "authors": [
+          "Ursula K. Le Guin"
+        ],
+        "openLibraryId": "OL59798W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/13617691-M.jpg",
+        "pageCount": 205,
+        "publishedYear": 1968,
+        "isbn13": "9788374692274",
+        "isbn10": "3898975282",
+        "matchedTitle": "A Wizard of Earthsea"
+      },
+      {
+        "title": "The Martian",
+        "authors": [
+          "Andy Weir"
+        ],
+        "openLibraryId": "OL17091839W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/11447888-M.jpg",
+        "pageCount": 407,
+        "publishedYear": 2011,
+        "isbn13": "9780606367202",
+        "isbn10": "6155514143",
+        "matchedTitle": "The Martian"
+      },
+      {
+        "title": "The Lies of Locke Lamora",
+        "authors": [
+          "Scott Lynch"
+        ],
+        "openLibraryId": "OL8369445W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/6307636-M.jpg",
+        "pageCount": 544,
+        "publishedYear": 2001,
+        "isbn13": "9780575076945",
+        "isbn10": "5170402791",
+        "matchedTitle": "The Lies of Locke Lamora"
+      },
+      {
+        "title": "Hyperion",
+        "authors": [
+          "Dan Simmons"
+        ],
+        "openLibraryId": "OL1963268W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/380332-M.jpg",
+        "pageCount": 481,
+        "publishedYear": 1989,
+        "isbn13": "9780575099432",
+        "isbn10": "0385263481",
+        "matchedTitle": "Hyperion"
+      },
+      {
+        "title": "Foundation",
+        "authors": [
+          "Isaac Asimov"
+        ],
+        "openLibraryId": "OL46125W",
+        "coverUrl": "https://covers.openlibrary.org/b/id/14612610-M.jpg",
+        "pageCount": 240,
+        "publishedYear": 1951,
+        "isbn13": "9780593497487",
+        "isbn10": "0380009145",
+        "matchedTitle": "Foundation"
+      }
+    ]
+  }
+]

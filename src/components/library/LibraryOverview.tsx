@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Search } from "lucide-react";
+import { ArrowRight, Compass, Search } from "lucide-react";
 import Link from "next/link";
 import { useMemo } from "react";
 import { formatAuthors } from "@/lib/books";
@@ -53,15 +53,22 @@ function EmptyLibrary() {
     <div className="mx-auto max-w-lg py-16 text-center">
       <h2 className="text-2xl font-semibold">Every great library starts with one book</h2>
       <p className="mt-3 text-text-secondary">
-        Search for something you&apos;re reading now, a favourite you&apos;ve read, or one you&apos;ve been meaning to
-        pick up.
+        Browse hand-picked starter lists and popular books by genre, or search for the one on your nightstand.
       </p>
-      <Link
-        href="/search"
-        className="mt-6 inline-flex h-11 items-center gap-2 rounded-md bg-accent px-5 font-semibold text-bg-primary hover:bg-accent-hover"
-      >
-        <Search aria-hidden size={18} /> Find your first book
-      </Link>
+      <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
+        <Link
+          href="/discover"
+          className="inline-flex h-11 items-center justify-center gap-2 rounded-md bg-accent px-5 font-semibold text-bg-primary hover:bg-accent-hover"
+        >
+          <Compass aria-hidden size={18} /> Discover books
+        </Link>
+        <Link
+          href="/search"
+          className="inline-flex h-11 items-center justify-center gap-2 rounded-md border border-border px-5 font-semibold hover:bg-bg-tertiary"
+        >
+          <Search aria-hidden size={18} /> Search
+        </Link>
+      </div>
     </div>
   );
 }

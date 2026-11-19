@@ -7,66 +7,17 @@ import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { formatAuthors } from "@/lib/books";
 import { useSortedShelves } from "@/lib/store/hooks";
 import { useLibrary } from "@/lib/store/library-store";
+import { ERROR_COPY, fetchBooks, type BooksPage, type FetchError } from "@/lib/openlibrary/client";
 import type { Book } from "@/lib/types";
 import { BookCover } from "../book/BookCover";
 
-interface SearchResponse {
-  books: Book[];
-  total: number;
-  page: number;
-  hasMore: boolean;
-}
+type SearchResponse = BooksPage;
+type SearchError = FetchError;
 
-type SearchError = { code: string; message: string };
+const fetchResults = (q: string, page: number) => fetchBooks("search", { q, page: String(page) });
 
-const ERROR_COPY: Record<string, { title: string; body: string }> = {
-  "rate-limited": {
-    title: "Open Library needs a short breather",
-    body: "We've sent a lot of searches in a short time. Wait about 10 seconds, then try again.",
-  },
-  timeout: {
-    title: "Open Library is responding slowly",
-    body: "The book catalogue didn't answer in time. It's usually temporary — try again in a moment.",
-  },
-  unavailable: {
-    title: "Open Library is unavailable right now",
-    body: "We couldn't reach the book catalogue. Your library is unaffected — try searching again shortly.",
-  },
-  offline: {
-    title: "You appear to be offline",
-    body: "Check your internet connection, then try again. Your shelves still work offline in this tab.",
-  },
-  "bad-response": {
-    title: "We got an unexpected response",
-    body: "Open Library sent data we couldn't read. Try a slightly different search.",
-  },
-};
-
-// Session-level cache: back/forward and repeat searches cost no requests.
-const cache = new Map<string, SearchResponse>();
-let lastRequestAt = 0;
-const MIN_INTERVAL_MS = 1000; // Open Library asks for ≤1 request/second.
-
-async function fetchResults(q: string, page: number): Promise<SearchResponse> {
-  const key = `${q.toLowerCase()}|${page}`;
-  const hit = cache.get(key);
-  if (hit) return hit;
-  const wait = lastRequestAt + MIN_INTERVAL_MS - Date.now();
-  if (wait > 0) await new Promise((r) => setTimeout(r, wait));
-  lastRequestAt = Date.now();
-  let res: Response;
-  try {
-    res = await fetch(`/api/books/search?${new URLSearchParams({ q, page: String(page) })}`);
-  } catch {
-    throw { code: navigator.onLine ? "unavailable" : "offline", message: "" } satisfies SearchError;
-  }
-  const body = await res.json().catch(() => null);
-  if (!res.ok || !body) throw (body?.error ?? { code: "unavailable", message: "" }) as SearchError;
-  cache.set(key, body);
-  return body as SearchResponse;
-}
-
-function AddControl({ book }: { book: Book }) {
+/** Shelf picker + Add, or "In your library" when any edition is already shelved. */
+export function AddControl({ book }: { book: Book }) {
   const shelves = useSortedShelves();
   const addBook = useLibrary((s) => s.addBook);
   const existing = useLibrary((s) => s.findExisting(book));

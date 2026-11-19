@@ -86,16 +86,10 @@ export function buildQuery(raw: string) {
   return q;
 }
 
-/**
- * Cached for an hour per (query, page): repeated searches are instant and we
- * stay well inside Open Library's rate limits.
- */
-export async function searchOpenLibrary(query: string, page: number): Promise<SearchResponse> {
-  "use cache";
-  cacheLife("hours");
-
+/** Shared request + normalization for every Open Library search-style call. */
+async function runSearch(params: Record<string, string>, page: number): Promise<SearchResponse> {
   const url = new URL("https://openlibrary.org/search.json");
-  url.searchParams.set("q", buildQuery(query));
+  for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
   url.searchParams.set("fields", FIELDS);
   url.searchParams.set("limit", String(RESULTS_PER_PAGE));
   url.searchParams.set("page", String(page));
@@ -134,4 +128,25 @@ export async function searchOpenLibrary(query: string, page: number): Promise<Se
   }
   const total = data.numFound ?? books.length;
   return { books, total, page, hasMore: page * RESULTS_PER_PAGE < total };
+}
+
+/**
+ * Cached for an hour per (query, page): repeated searches are instant and we
+ * stay well inside Open Library's rate limits.
+ */
+export async function searchOpenLibrary(query: string, page: number): Promise<SearchResponse> {
+  "use cache";
+  cacheLife("hours");
+  return runSearch({ q: buildQuery(query) }, page);
+}
+
+/**
+ * Most-shelved books for a genre, ranked by Open Library's reading logs —
+ * i.e. what real readers are tracking, rather than whichever public-domain
+ * classic has the most editions. Popularity shifts slowly, so cache for a day.
+ */
+export async function browseGenre(subjectQuery: string, page: number): Promise<SearchResponse> {
+  "use cache";
+  cacheLife("days");
+  return runSearch({ q: `${subjectQuery} language:eng`, sort: "readinglog" }, page);
 }
