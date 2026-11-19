@@ -9,8 +9,7 @@ import { useLibrary } from "@/lib/store/library-store";
 import type { LibraryEntry } from "@/lib/types";
 import { BookCover } from "../book/BookCover";
 import { BookTile, GridSkeleton } from "../book/BookTile";
-import { ProgressBar } from "../ui/ProgressBar";
-import { progressText, ProgressUpdater } from "../book/ProgressUpdater";
+import { ProgressUpdater } from "../book/ProgressUpdater";
 import { GoalCard } from "../goal/GoalCard";
 
 const PREVIEW_COUNT = 8;
@@ -33,14 +32,7 @@ function ReadingCard({ entry, priority }: { entry: LibraryEntry; priority: boole
           <p className="mt-2 w-fit rounded-sm bg-bg-tertiary px-2 py-0.5 text-xs text-text-secondary">{genre}</p>
         )}
         <div className="mt-auto pt-4">
-          <ProgressBar
-            value={entry.progress?.percent ?? 0}
-            label={progressText(entry)}
-            valueText={`${entry.progress?.percent ?? 0}%`}
-          />
-          <div className="mt-1">
-            <ProgressUpdater entry={entry} />
-          </div>
+          <ProgressUpdater entry={entry} />
         </div>
       </div>
     </li>

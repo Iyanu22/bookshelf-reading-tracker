@@ -8,11 +8,10 @@ import { formatAuthors } from "@/lib/books";
 import { useEntry, useShelf, useSortedShelves } from "@/lib/store/hooks";
 import { useLibrary } from "@/lib/store/library-store";
 import type { Book, LibraryEntry } from "@/lib/types";
-import { ProgressBar } from "../ui/ProgressBar";
 import { formatDate } from "../ui/RelativeTime";
 import { StarRatingInput } from "../ui/StarRating";
 import { BookCover } from "./BookCover";
-import { progressText, ProgressUpdater } from "./ProgressUpdater";
+import { ProgressUpdater } from "./ProgressUpdater";
 
 function externalLink(book: Book) {
   if (book.openLibraryId) return `https://openlibrary.org/works/${book.openLibraryId}`;
@@ -258,17 +257,7 @@ export function BookDetail() {
             </div>
 
             {isReading && (
-              <div>
-                <ProgressBar
-                  size="md"
-                  value={entry.progress?.percent ?? 0}
-                  label={progressText(entry)}
-                  valueText={`${entry.progress?.percent ?? 0}%`}
-                />
-                <div className="mt-2">
-                  <ProgressUpdater entry={entry} />
-                </div>
-              </div>
+              <ProgressUpdater entry={entry} size="md" />
             )}
 
             <div>
