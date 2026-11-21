@@ -11,6 +11,7 @@ import type { Book, LibraryEntry } from "@/lib/types";
 import { formatDate } from "../ui/RelativeTime";
 import { StarRatingInput } from "../ui/StarRating";
 import { BookCover } from "./BookCover";
+import { GenreEditor } from "./GenreEditor";
 import { ProgressUpdater } from "./ProgressUpdater";
 
 function externalLink(book: Book) {
@@ -213,15 +214,7 @@ export function BookDetail() {
         <div className="min-w-0">
           <h1 className="text-2xl leading-tight font-semibold text-balance sm:text-3xl">{book.title}</h1>
           <p className="mt-2 text-lg text-text-secondary">{formatAuthors(book.authors)}</p>
-          {book.genres.length > 0 && (
-            <ul aria-label="Genres" className="mt-4 flex flex-wrap gap-1.5">
-              {book.genres.map((g) => (
-                <li key={g} className="rounded-sm bg-bg-tertiary px-2 py-0.5 text-xs text-text-secondary">
-                  {g}
-                </li>
-              ))}
-            </ul>
-          )}
+          <GenreEditor entry={entry} />
 
           <div className="mt-6 grid gap-5 rounded-xl border border-border-subtle bg-surface p-5 shadow-sm">
             <div className="flex flex-wrap items-end gap-4">

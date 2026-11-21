@@ -2,8 +2,9 @@
 
 import { Check, Pencil, Search, Trash2, X } from "lucide-react";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useRef, useState } from "react";
+import { searchLibrary } from "@/lib/library-search";
 import { useShelf } from "@/lib/store/hooks";
 import { useLibrary } from "@/lib/store/library-store";
 import type { LibraryEntry, Shelf } from "@/lib/types";
@@ -176,7 +177,18 @@ export function ShelfView() {
   const [genre, setGenre] = useState("");
   const [author, setAuthor] = useState("");
   const [minRating, setMinRating] = useState("");
+  const [shelfFilter, setShelfFilter] = useState("");
   const [limit, setLimit] = useState(PAGE_SIZE);
+
+  // Text search across titles, authors and notes. Seeded from ?q= (the ⌘K
+  // palette's "see all matches"), and re-seeded if that link is followed again.
+  const urlQuery = useSearchParams().get("q") ?? "";
+  const [query, setQuery] = useState(urlQuery);
+  const [seededFrom, setSeededFrom] = useState(urlQuery);
+  if (urlQuery !== seededFrom) {
+    setSeededFrom(urlQuery);
+    setQuery(urlQuery);
+  }
   const activeSort = sort ?? defaultSort;
 
   const onShelf = useMemo(() => (isAll ? entries : entries.filter((e) => e.shelfId === shelfId)), [entries, isAll, shelfId]);
@@ -193,10 +205,17 @@ export function ShelfView() {
 
   const visible = useMemo(() => {
     const min = Number(minRating) || 0;
-    return onShelf
-      .filter((e) => (!genre || e.book.genres.includes(genre)) && (!author || e.book.authors.includes(author)) && (e.rating ?? 0) >= min)
+    const pool = query.trim() ? searchLibrary(onShelf, query).map((m) => m.entry) : onShelf;
+    return pool
+      .filter(
+        (e) =>
+          (!genre || e.book.genres.includes(genre)) &&
+          (!author || e.book.authors.includes(author)) &&
+          (!shelfFilter || e.shelfId === shelfFilter) &&
+          (e.rating ?? 0) >= min,
+      )
       .sort(SORTS[activeSort].fn);
-  }, [onShelf, genre, author, minRating, activeSort]);
+  }, [onShelf, query, genre, author, shelfFilter, minRating, activeSort]);
 
   if (status !== "ready") {
     return (
@@ -222,7 +241,7 @@ export function ShelfView() {
     );
   }
 
-  const filtersActive = Boolean(genre || author || minRating);
+  const filtersActive = Boolean(genre || author || minRating || shelfFilter || query.trim());
   const shelfName = shelf?.name ?? "All Books";
   const shelfCount = shelves.length;
 
@@ -246,7 +265,24 @@ export function ShelfView() {
         </div>
       ) : (
         <>
-          <div role="group" aria-label="Sort and filter" className="mt-6 grid grid-cols-2 items-end gap-3 sm:flex sm:flex-wrap">
+          <div className="relative mt-6 max-w-md">
+            <label htmlFor="shelf-search" className="sr-only">
+              Search {isAll ? "your library" : "this shelf"} by title, author or notes
+            </label>
+            <Search aria-hidden size={16} className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-text-tertiary" />
+            <input
+              id="shelf-search"
+              type="search"
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                setLimit(PAGE_SIZE);
+              }}
+              placeholder={isAll ? "Search your library — titles, authors, notes" : "Search this shelf"}
+              className="h-11 w-full rounded-md border border-border bg-surface pr-3 pl-9 text-sm placeholder:text-text-tertiary focus:border-accent focus:outline-none"
+            />
+          </div>
+          <div role="group" aria-label="Sort and filter" className="mt-4 grid grid-cols-2 items-end gap-3 sm:flex sm:flex-wrap">
             <Select id="sort" label="Sort by" value={activeSort} onChange={(v) => setSort(v as SortKey)}>
               {(Object.keys(SORTS) as SortKey[]).map((k) => (
                 <option key={k} value={k}>
@@ -254,6 +290,18 @@ export function ShelfView() {
                 </option>
               ))}
             </Select>
+            {isAll && (
+              <Select id="shelf-filter" label="Shelf" value={shelfFilter} onChange={setShelfFilter}>
+                <option value="">All shelves</option>
+                {[...shelves]
+                  .sort((a, b) => a.position - b.position)
+                  .map((sh) => (
+                    <option key={sh.id} value={sh.id}>
+                      {sh.name}
+                    </option>
+                  ))}
+              </Select>
+            )}
             <Select id="genre" label="Genre" value={genre} onChange={setGenre}>
               <option value="">All genres</option>
               {genres.map((g) => (
@@ -281,6 +329,8 @@ export function ShelfView() {
                   setGenre("");
                   setAuthor("");
                   setMinRating("");
+                  setShelfFilter("");
+                  setQuery("");
                 }}
                 className="h-10 rounded-md px-3 text-sm font-medium text-accent hover:bg-accent-subtle"
               >
@@ -294,7 +344,22 @@ export function ShelfView() {
           </p>
 
           {visible.length === 0 ? (
-            <p className="mt-6 text-text-secondary">No books match these filters. Try clearing one.</p>
+            <div className="mt-6 text-text-secondary">
+              <p>
+                {query.trim()
+                  ? `Nothing ${isAll ? "in your library" : "on this shelf"} matches “${query.trim()}”${genre || author || minRating || shelfFilter ? " with these filters" : ""}.`
+                  : "No books match these filters. Try clearing one."}
+              </p>
+              {query.trim() && (
+                <p className="mt-1 text-sm">
+                  Check the spelling, try an author&apos;s surname, or{" "}
+                  <Link href={`/search?q=${encodeURIComponent(query.trim())}`} className="text-accent underline underline-offset-2">
+                    search the catalogue for it
+                  </Link>
+                  .
+                </p>
+              )}
+            </div>
           ) : (
             <div className="mt-4">
               <BookGrid label={`${shelfName} books`}>

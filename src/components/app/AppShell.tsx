@@ -10,6 +10,7 @@ import { Logo } from "../ui/Logo";
 import { ThemeToggle } from "../ui/ThemeToggle";
 import { AccountMenu } from "./AccountMenu";
 import { GuestBanner } from "./GuestBanner";
+import { LibrarySearch } from "./LibrarySearch";
 import { ShelfNav } from "./ShelfNav";
 import { Toaster } from "./Toaster";
 
@@ -98,14 +99,18 @@ export function AppShell({ children }: { children: ReactNode }) {
       <div className="flex min-w-0 flex-col">
         <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-border-subtle bg-bg-primary/85 px-4 backdrop-blur sm:px-6 lg:px-8">
           <Logo href="/library" className="lg:hidden" />
-          <Link
-            href="/search"
-            className="ml-auto hidden h-11 w-full max-w-72 items-center gap-2.5 rounded-md border border-border bg-surface px-3 text-sm text-text-tertiary transition-colors hover:border-text-tertiary sm:flex"
-          >
-            <Search aria-hidden size={16} />
-            Find books to add…
-          </Link>
-          <div className="ml-auto flex items-center gap-1 sm:ml-0">
+          {/* Two distinct searches: your own books (instant, ⌘K) vs. the catalogue (Open Library). */}
+          <div className="ml-auto flex items-center gap-2">
+            {status === "ready" && <LibrarySearch />}
+            <Link
+              href="/search"
+              className="hidden h-11 items-center gap-2 rounded-md border border-border bg-surface px-3 text-sm text-text-tertiary transition-colors hover:border-text-tertiary hover:text-text-secondary sm:inline-flex"
+            >
+              <Search aria-hidden size={16} />
+              Find new books
+            </Link>
+          </div>
+          <div className="flex items-center gap-1">
             <ThemeToggle />
             <AccountMenu />
           </div>

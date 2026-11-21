@@ -1,6 +1,6 @@
 "use client";
 
-import { BarChart3, BookCheck, Bookmark, BookOpen, Compass, Library, Plus, Star, type LucideIcon } from "lucide-react";
+import { ArrowDown, ArrowUp, BarChart3, BookCheck, Bookmark, BookOpen, Check, Compass, Library, Plus, Star, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -102,6 +102,61 @@ function NewShelfForm() {
   );
 }
 
+/**
+ * Reorder mode: explicit move-up / move-down buttons rather than drag-and-drop,
+ * so it works the same with a mouse, a keyboard, a screen reader or a thumb.
+ */
+function ReorderList() {
+  const shelves = useSortedShelves();
+  const reorderShelves = useLibrary((s) => s.reorderShelves);
+  const [announcement, setAnnouncement] = useState("");
+
+  const move = (index: number, delta: -1 | 1) => {
+    const target = index + delta;
+    if (target < 0 || target >= shelves.length) return;
+    const ids = shelves.map((s) => s.id);
+    [ids[index], ids[target]] = [ids[target], ids[index]];
+    reorderShelves(ids);
+    setAnnouncement(`${shelves[index].name} moved to position ${target + 1} of ${shelves.length}.`);
+  };
+
+  const btn =
+    "grid size-10 shrink-0 place-items-center rounded-md text-text-secondary hover:bg-bg-tertiary hover:text-text-primary disabled:opacity-30 lg:size-7";
+
+  return (
+    <>
+      <ol aria-label="Reorder shelves" className="mt-2 space-y-0.5">
+        {shelves.map((s, i) => {
+          const Icon = shelfIcon(s);
+          return (
+            <li key={s.id} className="flex min-h-11 items-center gap-2 rounded-md bg-bg-tertiary/50 pr-0.5 pl-3 text-[0.9375rem]">
+              <Icon aria-hidden size={18} strokeWidth={1.75} className="shrink-0 text-text-tertiary" />
+              <span className="min-w-0 flex-1 truncate" title={s.name}>
+                {s.name}
+              </span>
+              <button type="button" onClick={() => move(i, -1)} disabled={i === 0} aria-label={`Move ${s.name} up`} className={btn}>
+                <ArrowUp aria-hidden size={16} />
+              </button>
+              <button
+                type="button"
+                onClick={() => move(i, 1)}
+                disabled={i === shelves.length - 1}
+                aria-label={`Move ${s.name} down`}
+                className={btn}
+              >
+                <ArrowDown aria-hidden size={16} />
+              </button>
+            </li>
+          );
+        })}
+      </ol>
+      <p aria-live="polite" className="sr-only">
+        {announcement}
+      </p>
+    </>
+  );
+}
+
 /** Shelf list with counts — the primary navigation, shared by sidebar and mobile sheet. */
 export function ShelfNav({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
@@ -109,6 +164,7 @@ export function ShelfNav({ onNavigate }: { onNavigate?: () => void }) {
   const counts = useShelfCounts();
   const total = useLibrary((s) => s.entries.length);
   const ready = useLibrary((s) => s.status === "ready");
+  const [reordering, setReordering] = useState(false);
 
   return (
     <div>
@@ -146,13 +202,33 @@ export function ShelfNav({ onNavigate }: { onNavigate?: () => void }) {
           onNavigate={onNavigate}
         />
       </ul>
-      <p className="mt-6 px-3 text-xs font-semibold tracking-wider text-text-tertiary uppercase">Shelves</p>
+      <div className="mt-6 flex items-center justify-between pr-1 pl-3">
+        <p className="text-xs font-semibold tracking-wider text-text-tertiary uppercase">Shelves</p>
+        {ready && shelves.length > 1 && (
+          <button
+            type="button"
+            onClick={() => setReordering((r) => !r)}
+            aria-pressed={reordering}
+            className="inline-flex h-8 items-center gap-1 rounded px-2 text-xs font-medium text-text-tertiary hover:bg-bg-tertiary hover:text-text-primary"
+          >
+            {reordering ? (
+              <>
+                <Check aria-hidden size={14} /> Done
+              </>
+            ) : (
+              "Reorder"
+            )}
+          </button>
+        )}
+      </div>
       {!ready ? (
         <ul aria-hidden className="mt-2 space-y-2 px-3">
           {[0, 1, 2, 3].map((i) => (
             <li key={i} className="h-7 animate-pulse rounded bg-bg-tertiary" />
           ))}
         </ul>
+      ) : reordering ? (
+        <ReorderList />
       ) : (
         <ul className="mt-2 space-y-0.5">
           {shelves.map((s) => (
@@ -168,9 +244,11 @@ export function ShelfNav({ onNavigate }: { onNavigate?: () => void }) {
           ))}
         </ul>
       )}
-      <div className="mt-1">
-        <NewShelfForm />
-      </div>
+      {!reordering && (
+        <div className="mt-1">
+          <NewShelfForm />
+        </div>
+      )}
     </div>
   );
 }
