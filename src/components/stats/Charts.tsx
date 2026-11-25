@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { MONTHS, MONTHS_LONG, type HeatDay, type Ranked } from "@/lib/stats";
-import { niceMax, useChartTooltip, useRovingFocus } from "./chart-kit";
+import { niceMax, useChartTooltip, useRovingFocus } from "./ChartKit";
 
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
 

@@ -8,8 +8,8 @@ import { computeYearStats, MONTHS_LONG, percentChange, yearsWithReading, type Fi
 import { useLibrary } from "@/lib/store/library-store";
 import { useNow } from "@/lib/use-now";
 import { BookCover } from "../book/BookCover";
-import { ChartCard, Legend, StatTile } from "./chart-kit";
-import { ColumnChart, MonthlyChart, RankedBars, ReadingHeatmap } from "./charts";
+import { ChartCard, Legend, StatTile } from "./ChartKit";
+import { ColumnChart, MonthlyChart, RankedBars, ReadingHeatmap } from "./Charts";
 
 const plural = (n: number, one: string, many = `${one}s`) => `${n.toLocaleString()} ${n === 1 ? one : many}`;
 
