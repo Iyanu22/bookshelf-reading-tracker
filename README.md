@@ -255,14 +255,18 @@ Most of the work in a chart is deciding what *not* to show: one axis, one emphas
 
 ### Lighthouse Scores
 
-<!-- TODO: run Lighthouse on the deployed /guest URL -->
+Lighthouse 12, mobile profile (simulated slow 4G), run against the live site on 25 Nov 2026.
 
-| Category | Score |
-|----------|-------|
-| Performance | |
-| Accessibility | |
-| Best Practices | |
-| SEO | |
+| Category | Landing `/` | Guest library `/guest` |
+|----------|:---:|:---:|
+| Performance | 98 | 77 |
+| Accessibility | 100 | 100 |
+| Best Practices | 100 | 100 |
+| SEO | 100 | 100 |
+
+**What moved the numbers:** Open Library covers redirect up to twice to archive.org, and one took 17.8 s to load. Routing covers through Next.js image optimization (fetched once, resized to the rendered size, served as WebP from Vercel's CDN for 31 days) took `/guest` from 66 to 77 (Speed Index 8.1 s → 4.0 s) and the landing page from 90 to 98. A contrast fix on the success green took landing accessibility from 96 to 100.
+
+**What's left on `/guest`:** the guest library is built in the browser from the seed data, so the first paint waits on JavaScript (about 0.5 s of main-thread blocking). Rendering the guest shell on the server would be the next step.
 
 ### Strengths
 
