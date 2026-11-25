@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { formatAuthors } from "@/lib/books";
+import { booksCopy, pagesCopy, planSlides, SLIDE_LABELS, type SlideId } from "@/lib/review";
 import { computeYearStats, MONTHS, MONTHS_LONG, type YearStats } from "@/lib/stats";
 import { useLibrary } from "@/lib/store/library-store";
 import type { LibraryEntry, ReadingGoal } from "@/lib/types";
@@ -33,216 +34,184 @@ function Line({ children }: { children: ReactNode }) {
 }
 
 interface Slide {
-  id: string;
+  id: SlideId;
   label: string;
   render: () => ReactNode;
 }
 
-function booksCopy(n: number, s: YearStats) {
-  if (n <= 3) return "Every one of them a whole world. That counts.";
-  const weeks = Math.round((52 * s.yearFraction) / n);
-  if (n < 12) return `That's roughly one every ${weeks} weeks.`;
-  const perMonth = n / (12 * s.yearFraction);
-  return `That's about ${perMonth >= 1.95 ? Math.round(perMonth) : perMonth.toFixed(1)} a month.`;
+interface SlideProps {
+  s: YearStats;
+  goal: ReadingGoal | undefined;
 }
 
-function pagesCopy(pages: number) {
-  // A leaf is ~0.1 mm and holds two pages.
-  const cm = Math.round(pages * 0.005);
-  if (cm < 5) return "Page by page, it adds up.";
-  return `Stacked up, that's a tower of paper about ${cm} cm tall.`;
+function IntroSlide({ s }: SlideProps) {
+  return (
+    <>
+      <Kicker>Bookshelf · Year in review</Kicker>
+      <h2 className="mt-6 font-heading text-5xl leading-tight font-semibold text-balance sm:text-6xl">Your {s.year} in books</h2>
+      <Line>{s.isCurrentYear ? "The story so far — let's look back at what you've read." : "Let's look back at what you read."}</Line>
+      <div aria-hidden className="mt-10 flex -space-x-6">
+        {s.finished.slice(-5).map((e, i) => (
+          <div key={e.id} className="w-20 shrink-0" style={{ transform: `rotate(${(i - 2) * 5}deg)` }}>
+            <BookCover book={e.book} size="sm" decorative priority />
+          </div>
+        ))}
+      </div>
+    </>
+  );
 }
 
-function buildSlides(s: YearStats, goal: ReadingGoal | undefined): Slide[] {
+function BooksSlide({ s, goal }: SlideProps) {
   const n = s.finished.length;
-  const slides: Slide[] = [];
+  return (
+    <>
+      <Kicker>{s.isCurrentYear ? "So far this year, you finished" : `In ${s.year}, you finished`}</Kicker>
+      <Hero>{n}</Hero>
+      <p className="mt-2 text-2xl font-medium">{n === 1 ? "book" : "books"}</p>
+      <Line>{booksCopy(n, s)}</Line>
+      {goal && (
+        <p className="mt-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm">
+          {n >= goal.target ? (
+            <>🎉 You hit your goal of {goal.target}!</>
+          ) : (
+            <>
+              {n} of your {goal.target}-book goal · {goal.target - n} to go
+            </>
+          )}
+        </p>
+      )}
+    </>
+  );
+}
 
-  slides.push({
-    id: "intro",
-    label: "Introduction",
-    render: () => (
-      <>
-        <Kicker>Bookshelf · Year in review</Kicker>
-        <h2 className="mt-6 font-heading text-5xl leading-tight font-semibold text-balance sm:text-6xl">
-          Your {s.year} in books
-        </h2>
-        <Line>{s.isCurrentYear ? "The story so far — let's look back at what you've read." : "Let's look back at what you read."}</Line>
-        <div aria-hidden className="mt-10 flex -space-x-6">
-          {s.finished.slice(-5).map((e, i) => (
-            <div key={e.id} className="w-20 shrink-0" style={{ transform: `rotate(${(i - 2) * 5}deg)` }}>
-              <BookCover book={e.book} size="sm" decorative priority />
-            </div>
-          ))}
-        </div>
-      </>
-    ),
-  });
+function PagesSlide({ s }: SlideProps) {
+  return (
+    <>
+      <Kicker>You turned</Kicker>
+      <Hero>{s.pages.toLocaleString()}</Hero>
+      <p className="mt-2 text-2xl font-medium">pages</p>
+      <Line>{pagesCopy(s.pages)}</Line>
+      {s.averagePages && <p className="mt-4 opacity-75">Your average book ran {s.averagePages} pages.</p>}
+    </>
+  );
+}
 
-  slides.push({
-    id: "books",
-    label: "Books read",
-    render: () => (
-      <>
-        <Kicker>{s.isCurrentYear ? "So far this year, you finished" : `In ${s.year}, you finished`}</Kicker>
-        <Hero>{n}</Hero>
-        <p className="mt-2 text-2xl font-medium">{n === 1 ? "book" : "books"}</p>
-        <Line>{booksCopy(n, s)}</Line>
-        {goal && (
-          <p className="mt-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm">
-            {n >= goal.target ? (
-              <>🎉 You hit your goal of {goal.target}!</>
-            ) : (
-              <>
-                {n} of your {goal.target}-book goal · {goal.target - n} to go
-              </>
-            )}
-          </p>
-        )}
-      </>
-    ),
-  });
-
-  if (s.pages > 0) {
-    slides.push({
-      id: "pages",
-      label: "Pages read",
-      render: () => (
-        <>
-          <Kicker>You turned</Kicker>
-          <Hero>{s.pages.toLocaleString()}</Hero>
-          <p className="mt-2 text-2xl font-medium">pages</p>
-          <Line>{pagesCopy(s.pages)}</Line>
-          {s.averagePages && <p className="mt-4 opacity-75">Your average book ran {s.averagePages} pages.</p>}
-        </>
-      ),
-    });
-  }
-
+function GenreSlide({ s }: SlideProps) {
   const top = s.genres[0];
-  if (top && top.label !== "Uncategorized") {
-    slides.push({
-      id: "genre",
-      label: "Top genre",
-      render: () => (
-        <>
-          <Kicker>Your most-read genre</Kicker>
-          <h2 className="mt-6 font-heading text-5xl leading-tight font-semibold text-balance sm:text-6xl">{top.label}</h2>
-          <Line>
-            {plural(top.value, "book")} — {Math.round((top.value / n) * 100)}% of everything you finished.
-          </Line>
-          {s.genres.length > 1 && (
-            <ol className="mt-8 space-y-2 text-lg">
-              {s.genres.slice(1, 4).map((g, i) => (
-                <li key={g.label} className="flex gap-3 opacity-85">
-                  <span className="w-5 opacity-60">{i + 2}</span>
-                  <span className="flex-1">{g.label}</span>
-                  <span className="opacity-70">{g.value}</span>
-                </li>
-              ))}
-            </ol>
-          )}
-        </>
-      ),
-    });
-  }
+  return (
+    <>
+      <Kicker>Your most-read genre</Kicker>
+      <h2 className="mt-6 font-heading text-5xl leading-tight font-semibold text-balance sm:text-6xl">{top.label}</h2>
+      <Line>
+        {plural(top.value, "book")} — {Math.round((top.value / s.finished.length) * 100)}% of everything you finished.
+      </Line>
+      {s.genres.length > 1 && (
+        <ol className="mt-8 space-y-2 text-lg">
+          {s.genres.slice(1, 4).map((g, i) => (
+            <li key={g.label} className="flex gap-3 opacity-85">
+              <span className="w-5 opacity-60">{i + 2}</span>
+              <span className="flex-1">{g.label}</span>
+              <span className="opacity-70">{g.value}</span>
+            </li>
+          ))}
+        </ol>
+      )}
+    </>
+  );
+}
 
-  if (s.busiestMonth && n >= 3) {
-    const peak = s.busiestMonth;
-    const max = Math.max(...s.booksPerMonth);
-    slides.push({
-      id: "month",
-      label: "Busiest month",
-      render: () => (
-        <>
-          <Kicker>Your biggest reading month</Kicker>
-          <h2 className="mt-6 font-heading text-5xl font-semibold sm:text-6xl">{MONTHS_LONG[peak.month]}</h2>
-          <Line>{plural(peak.count, "book")} finished in a single month.</Line>
-          {/* Emphasis: the peak in gold, every other month quiet. */}
-          <div
-            role="img"
-            aria-label={`Books per month: ${s.booksPerMonth.map((v, i) => `${MONTHS[i]} ${v}`).join(", ")}`}
-            className="mt-10 flex h-32 items-end gap-[3px]"
-          >
-            {s.booksPerMonth.map((v, i) => (
-              <div key={i} className="flex h-full flex-1 flex-col items-center justify-end">
-                <div
-                  className="w-full max-w-5 rounded-t-[4px]"
-                  style={{ height: `${(v / max) * 100}%`, minHeight: v ? 4 : 0, background: i === peak.month ? GOLD : "rgba(250,248,245,0.28)" }}
-                />
-              </div>
-            ))}
+function MonthSlide({ s }: SlideProps) {
+  const peak = s.busiestMonth!;
+  const max = Math.max(...s.booksPerMonth);
+  return (
+    <>
+      <Kicker>Your biggest reading month</Kicker>
+      <h2 className="mt-6 font-heading text-5xl font-semibold sm:text-6xl">{MONTHS_LONG[peak.month]}</h2>
+      <Line>{plural(peak.count, "book")} finished in a single month.</Line>
+      {/* Emphasis: the peak in gold, every other month quiet. */}
+      <div
+        role="img"
+        aria-label={`Books per month: ${s.booksPerMonth.map((v, i) => `${MONTHS[i]} ${v}`).join(", ")}`}
+        className="mt-10 flex h-32 items-end gap-[3px]"
+      >
+        {s.booksPerMonth.map((v, i) => (
+          <div key={i} className="flex h-full flex-1 flex-col items-center justify-end">
+            <div
+              className="w-full max-w-5 rounded-t-[4px]"
+              style={{ height: `${(v / max) * 100}%`, minHeight: v ? 4 : 0, background: i === peak.month ? GOLD : "rgba(250,248,245,0.28)" }}
+            />
           </div>
-          <div aria-hidden className="mt-2 flex text-[0.65rem] opacity-60">
-            {MONTHS.map((m) => (
-              <span key={m} className="flex-1 text-center">
-                {m[0]}
-              </span>
-            ))}
+        ))}
+      </div>
+      <div aria-hidden className="mt-2 flex text-[0.65rem] opacity-60">
+        {MONTHS.map((m) => (
+          <span key={m} className="flex-1 text-center">
+            {m[0]}
+          </span>
+        ))}
+      </div>
+    </>
+  );
+}
+
+function HabitSlide({ s }: SlideProps) {
+  return (
+    <>
+      <Kicker>You opened a book on</Kicker>
+      <Hero>{s.readingDays}</Hero>
+      <p className="mt-2 text-2xl font-medium">different days</p>
+      {s.longestStreak >= 2 && (
+        <Line>
+          Your longest streak: <span style={{ color: GOLD }}>{plural(s.longestStreak, "day")}</span> in a row.
+        </Line>
+      )}
+      {s.finishTimes.average && (
+        <p className="mt-4 opacity-75">On average, a book took you {plural(s.finishTimes.average, "day")} from start to finish.</p>
+      )}
+    </>
+  );
+}
+
+function RangeSlide({ s }: SlideProps) {
+  const pair = [
+    { label: "Longest", e: s.longest! },
+    { label: "Shortest", e: s.shortest! },
+  ];
+  return (
+    <>
+      <Kicker>From epic to quick read</Kicker>
+      <div className="mt-8 grid grid-cols-2 gap-6">
+        {pair.map(({ label, e }) => (
+          <div key={label} className="max-w-[8.5rem] [@media(min-height:820px)]:max-w-[11rem]">
+            <BookCover book={e.book} size="md" decorative />
+            <p className="mt-3 text-sm opacity-70">{label}</p>
+            <p className="font-heading text-lg leading-snug">{e.book.title}</p>
+            <p className="mt-1 text-2xl font-bold">{e.book.pageCount} pp</p>
           </div>
-        </>
-      ),
-    });
-  }
+        ))}
+      </div>
+    </>
+  );
+}
 
-  if (s.readingDays >= 3) {
-    slides.push({
-      id: "habit",
-      label: "Reading habit",
-      render: () => (
-        <>
-          <Kicker>You opened a book on</Kicker>
-          <Hero>{s.readingDays}</Hero>
-          <p className="mt-2 text-2xl font-medium">different days</p>
-          {s.longestStreak >= 2 && (
-            <Line>
-              Your longest streak: <span style={{ color: GOLD }}>{plural(s.longestStreak, "day")}</span> in a row.
-            </Line>
-          )}
-          {s.finishTimes.average && (
-            <p className="mt-4 opacity-75">On average, a book took you {plural(s.finishTimes.average, "day")} from start to finish.</p>
-          )}
-        </>
-      ),
-    });
-  }
+const SLIDE_COMPONENTS: Record<SlideId, (props: SlideProps) => ReactNode> = {
+  intro: IntroSlide,
+  books: BooksSlide,
+  pages: PagesSlide,
+  genre: GenreSlide,
+  month: MonthSlide,
+  habit: HabitSlide,
+  favourite: ({ s }) => <FavouriteSlide entry={s.topRated[0]} />,
+  range: RangeSlide,
+  summary: SummaryCard,
+};
 
-  const fav = s.topRated[0];
-  if (fav) {
-    slides.push({
-      id: "favourite",
-      label: "Favourite book",
-      render: () => <FavouriteSlide entry={fav} />,
-    });
-  }
-
-  if (s.longest && s.shortest && s.longest !== s.shortest) {
-    const pair = [
-      { label: "Longest", e: s.longest },
-      { label: "Shortest", e: s.shortest },
-    ];
-    slides.push({
-      id: "range",
-      label: "Longest and shortest",
-      render: () => (
-        <>
-          <Kicker>From epic to quick read</Kicker>
-          <div className="mt-8 grid grid-cols-2 gap-6">
-            {pair.map(({ label, e }) => (
-              <div key={label} className="max-w-[8.5rem] [@media(min-height:820px)]:max-w-[11rem]">
-                <BookCover book={e.book} size="md" decorative />
-                <p className="mt-3 text-sm opacity-70">{label}</p>
-                <p className="font-heading text-lg leading-snug">{e.book.title}</p>
-                <p className="mt-1 text-2xl font-bold">{e.book.pageCount} pp</p>
-              </div>
-            ))}
-          </div>
-        </>
-      ),
-    });
-  }
-
-  slides.push({ id: "summary", label: "Summary", render: () => <SummaryCard s={s} goal={goal} /> });
-  return slides;
+/** Which slides this year earns comes from planSlides (lib/review.ts); this only renders them. */
+function buildSlides(s: YearStats, goal: ReadingGoal | undefined): Slide[] {
+  return planSlides(s).map((id) => {
+    const SlideContent = SLIDE_COMPONENTS[id];
+    return { id, label: SLIDE_LABELS[id], render: () => <SlideContent s={s} goal={goal} /> };
+  });
 }
 
 function FavouriteSlide({ entry }: { entry: LibraryEntry }) {
