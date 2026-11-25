@@ -144,6 +144,16 @@ export function SignUpForm() {
         <p className="mt-2 text-sm text-text-secondary">
           We sent a confirmation link to <strong>{sentTo}</strong>. Open it to finish creating your library.
         </p>
+        {/* Supabase sends nothing for an already-registered email (so sign-up can't reveal who has an
+            account). Say so without confirming either way, or existing users wait for a link that never comes. */}
+        <p className="mt-3 text-sm text-text-secondary">
+          Nothing after a few minutes? Check your spam folder. If you&apos;ve signed up with this email before, no new
+          link is sent —{" "}
+          <Link href="/sign-in" className="font-medium text-accent underline underline-offset-2 hover:text-accent-hover">
+            sign in instead
+          </Link>
+          .
+        </p>
       </div>
     );
   }
