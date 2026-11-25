@@ -3,7 +3,7 @@
 import { ArrowDown, ArrowUp, BarChart3, BookCheck, Bookmark, BookOpen, Check, Compass, Library, Plus, Star, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useShelfCounts, useSortedShelves } from "@/lib/store/hooks";
 import { useLibrary } from "@/lib/store/library-store";
 import type { Shelf } from "@/lib/types";
@@ -59,11 +59,25 @@ function NewShelfForm() {
   const createShelf = useLibrary((s) => s.createShelf);
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
+  // The input unmounts on close; when the reader closed it from the keyboard (Escape or
+  // Enter), put focus back on the trigger instead of dropping it to <body>.
+  const refocusTrigger = useRef(false);
+  const close = (refocus: boolean) => {
+    refocusTrigger.current = refocus;
+    setName("");
+    setOpen(false);
+  };
 
   if (!open) {
     return (
       <button
         type="button"
+        ref={(el) => {
+          if (el && refocusTrigger.current) {
+            refocusTrigger.current = false;
+            el.focus();
+          }
+        }}
         onClick={() => setOpen(true)}
         className="flex min-h-11 w-full items-center gap-3 rounded-md px-3 text-[0.9375rem] text-text-tertiary transition-colors hover:bg-bg-tertiary hover:text-text-primary"
       >
@@ -78,10 +92,7 @@ function NewShelfForm() {
       onSubmit={async (e) => {
         e.preventDefault();
         const shelf = await createShelf(name);
-        if (shelf) {
-          setName("");
-          setOpen(false);
-        }
+        if (shelf) close(true);
       }}
     >
       <label htmlFor="new-shelf" className="sr-only">
@@ -93,8 +104,13 @@ function NewShelfForm() {
         value={name}
         maxLength={60}
         onChange={(e) => setName(e.target.value)}
-        onKeyDown={(e) => e.key === "Escape" && setOpen(false)}
-        onBlur={() => !name && setOpen(false)}
+        onKeyDown={(e) => {
+          if (e.key !== "Escape") return;
+          e.preventDefault(); // don't also close the mobile shelves sheet around us
+          close(true);
+        }}
+        // Leaving an empty field by click/Tab: focus already went where the reader chose.
+        onBlur={() => !name && close(false)}
         placeholder="e.g. Book Club 2026"
         className="h-11 w-full rounded-md border border-border bg-surface px-3 text-sm placeholder:text-text-tertiary focus:border-accent focus:outline-none"
       />
