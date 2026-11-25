@@ -66,30 +66,59 @@ const snapshotOf = (s: LibrarySnapshot): LibrarySnapshot => ({
   progressEvents: s.progressEvents,
 });
 
+type Change = (s: LibrarySnapshot) => Partial<LibrarySnapshot>;
+
+/**
+ * Journal of optimistic changes, oldest first. A change stays here until it *and every
+ * change before it* has settled, so that if an older one fails, every newer change
+ * (saved or still in flight) can be replayed on top of the rollback.
+ */
+interface JournalEntry {
+  change: Change;
+  /** State just before this change was applied (rebased if an earlier change fails). */
+  before: LibrarySnapshot;
+  saved: boolean;
+}
+
 export const useLibrary = create<LibraryState>()((set, get) => {
+  const journal: JournalEntry[] = [];
+
   /**
-   * Optimistic update: apply `change` immediately, persist in the background,
-   * and restore the previous snapshot with a specific message if it fails.
+   * Optimistic update: apply `change` immediately and persist in the background.
+   * If saving fails, undo *only this change*: rebuild from the state just before it
+   * and replay every later change on top. Restoring a plain snapshot would also wipe
+   * out changes made (and saved) while this request was in flight.
+   * Resolves to whether the change was saved.
    */
-  async function mutate(
-    change: (s: LibraryState) => Partial<LibrarySnapshot>,
-    persist: (r: LibraryRepository) => Promise<void>,
-    failure: string,
-  ) {
-    const before = snapshotOf(get());
+  async function mutate(change: Change, persist: (r: LibraryRepository) => Promise<void>, failure: string) {
+    const record: JournalEntry = { change, before: snapshotOf(get()), saved: false };
+    journal.push(record);
     set(change(get()));
     repo?.saveSnapshot?.(snapshotOf(get()));
     try {
       if (repo) await persist(repo);
+      record.saved = true;
+      return true;
     } catch (err) {
       console.error(err);
-      set(before);
-      repo?.saveSnapshot?.(before);
+      const at = journal.indexOf(record);
+      let state = record.before;
+      for (const later of journal.slice(at + 1)) {
+        later.before = state;
+        state = { ...state, ...later.change(state) };
+      }
+      journal.splice(at, 1);
+      set(state);
+      repo?.saveSnapshot?.(state);
       get().notify(failure, "error");
+      return false;
+    } finally {
+      // Settled changes at the head can no longer be affected by a rollback.
+      while (journal[0]?.saved) journal.shift();
     }
   }
 
-  const patchEntry = (id: string, patch: Partial<LibraryEntry>) => (s: LibraryState) => ({
+  const patchEntry = (id: string, patch: Partial<LibraryEntry>) => (s: LibrarySnapshot) => ({
     entries: s.entries.map((e) => (e.id === id ? { ...e, ...patch } : e)),
   });
 
@@ -221,7 +250,7 @@ export const useLibrary = create<LibraryState>()((set, get) => {
         percent,
       };
       const patch: Partial<LibraryEntry> = { progress, startedAt: entry.startedAt ?? ts };
-      await mutate(
+      const saved = await mutate(
         (s) => ({
           ...patchEntry(entryId, patch)(s),
           progressEvents: percent !== prevPercent ? [...s.progressEvents, event] : s.progressEvents,
@@ -232,7 +261,8 @@ export const useLibrary = create<LibraryState>()((set, get) => {
         },
         "Couldn't save your progress. Your last saved page is restored.",
       );
-      return { finished: percent >= 100 };
+      // Only offer "Mark as read" once the final page has actually been saved.
+      return { finished: saved && percent >= 100 };
     },
 
     async rate(entryId, rating) {
