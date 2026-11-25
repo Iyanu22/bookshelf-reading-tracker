@@ -153,6 +153,18 @@ async function resolve(title, author) {
   };
 }
 
+// Hand-checked corrections applied on top of whatever Open Library returns. Its
+// work-level cover and first ISBNs can belong to a translation, so pin a known
+// English edition here (cover id + ISBNs from openlibrary.org/works/<id>/editions).
+const OVERRIDES = {
+  // Default cover was the Spanish edition ("Nunca me abandones"), ISBN-10 Italian.
+  "Never Let Me Go": {
+    coverUrl: "https://covers.openlibrary.org/b/id/13160732-M.jpg", // Vintage International, 2006
+    isbn13: "9781400078776",
+    isbn10: "1400078776",
+  },
+};
+
 const OUTPUT = new URL("../src/lib/discover/curated-lists.json", import.meta.url);
 
 // Reuse previous resolutions: Open Library answers vary between calls, so a
@@ -170,7 +182,8 @@ for (const list of LISTS) {
   const books = [];
   for (const [title, author] of list.books) {
     const cached = previous.get(title);
-    const book = cached ?? (await resolve(title, author).catch((e) => (console.error(e.message), null)));
+    const resolved = cached ?? (await resolve(title, author).catch((e) => (console.error(e.message), null)));
+    const book = resolved && { ...resolved, ...OVERRIDES[title] };
     if (book) books.push(book);
     else misses.push(`${title} — ${author}`);
     process.stdout.write(cached ? "=" : book ? "." : "x");

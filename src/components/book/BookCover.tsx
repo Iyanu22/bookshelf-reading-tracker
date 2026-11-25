@@ -1,16 +1,22 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { coverAtSize, formatAuthors } from "@/lib/books";
 import type { Book } from "@/lib/types";
 
 type Size = "xs" | "sm" | "md" | "lg";
 
-const SIZES: Record<Size, { ol: "S" | "M" | "L"; title: string; author: string; pad: string }> = {
-  xs: { ol: "M", title: "text-[0.55rem] leading-tight", author: "hidden", pad: "p-1.5" },
-  sm: { ol: "M", title: "text-xs leading-snug", author: "text-[0.6rem]", pad: "p-2.5" },
-  md: { ol: "M", title: "text-sm leading-snug", author: "text-xs", pad: "p-3" },
-  lg: { ol: "L", title: "text-xl leading-snug", author: "text-sm", pad: "p-6" },
+/**
+ * `width` is the typical rendered width in CSS pixels. The optimizer serves 1x and 2x
+ * versions of it, so the source must be large enough for 2x: Open Library's M is
+ * only 180px wide, so md and lg read from L (~500px).
+ */
+const SIZES: Record<Size, { ol: "S" | "M" | "L"; width: number; title: string; author: string; pad: string }> = {
+  xs: { ol: "M", width: 64, title: "text-[0.55rem] leading-tight", author: "hidden", pad: "p-1.5" },
+  sm: { ol: "M", width: 112, title: "text-xs leading-snug", author: "text-[0.6rem]", pad: "p-2.5" },
+  md: { ol: "L", width: 180, title: "text-sm leading-snug", author: "text-xs", pad: "p-3" },
+  lg: { ol: "L", width: 320, title: "text-xl leading-snug", author: "text-sm", pad: "p-6" },
 };
 
 /** Warm, muted spines so placeholder covers sit naturally among real covers. */
@@ -36,10 +42,11 @@ function hash(s: string) {
  * to the styled placeholder instead of an invisible image.
  */
 function coverSrc(url: string, size: "S" | "M" | "L") {
-  const sized = coverAtSize(url, size) ?? url;
-  if (!sized.includes("covers.openlibrary.org")) return sized;
-  return sized.includes("?") ? `${sized}&default=false` : `${sized}?default=false`;
+  const sized = (coverAtSize(url, size) ?? url).split("?")[0];
+  return isOpenLibrary(sized) ? `${sized}?default=false` : sized;
 }
+
+const isOpenLibrary = (url: string) => url.startsWith("https://covers.openlibrary.org/b/");
 
 interface Props {
   book: Pick<Book, "title" | "authors" | "coverUrl">;
@@ -57,6 +64,7 @@ export function BookCover({ book, size = "md", className = "", priority = false,
   const cfg = SIZES[size];
   const label = `Cover of ${book.title} by ${formatAuthors(book.authors)}`;
   const showImage = book.coverUrl && !failed;
+  const src = book.coverUrl ? coverSrc(book.coverUrl, cfg.ol) : "";
   const [bg, fg] = PALETTE[hash(book.title) % PALETTE.length];
 
   return (
@@ -64,16 +72,17 @@ export function BookCover({ book, size = "md", className = "", priority = false,
       className={`relative aspect-[2/3] w-full overflow-hidden rounded-sm bg-bg-tertiary shadow-book ${className}`}
     >
       {showImage ? (
-        // Plain <img>: covers come from Open Library's CDN at fixed sizes, so
-        // routing them through the Next image optimizer would only add latency.
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={coverSrc(book.coverUrl!, cfg.ol)}
+        // Through the image optimizer (see next.config.ts): Open Library is slow to
+        // serve covers directly, so each one is fetched once, resized and CDN-cached.
+        <Image
+          src={src}
           alt={decorative ? "" : label}
           loading={priority ? "eager" : "lazy"}
-          decoding="async"
-          width={size === "lg" ? 500 : 180}
-          height={size === "lg" ? 750 : 270}
+          fetchPriority={priority ? "high" : undefined}
+          width={cfg.width}
+          height={Math.round(cfg.width * 1.5)}
+          // Only Open Library is allow-listed for optimization; anything else loads as-is.
+          unoptimized={!isOpenLibrary(src)}
           ref={(img) => {
             // The image may settle before hydration, when onLoad/onError can't fire.
             if (img?.complete) {

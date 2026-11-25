@@ -1,6 +1,7 @@
 import { BarChart3, BookOpen, LibraryBig, Target } from "lucide-react";
 import Link from "next/link";
 import sampleBooks from "../../data/sample-books.json";
+import { BookCover } from "@/components/book/BookCover";
 import { Logo } from "@/components/ui/Logo";
 
 type Sample = { title: string; author: string; coverUrl: string | null };
@@ -31,22 +32,15 @@ const FEATURES = [
   },
 ];
 
-function Cover({ book, className = "", eager = false }: { book: Sample; className?: string; eager?: boolean }) {
+/** Same cover component as the app: optimized, CDN-cached, with a styled fallback for missing covers. */
+function Cover({ book, size = "sm", eager = false, decorative = false }: { book: Sample; size?: "xs" | "sm"; eager?: boolean; decorative?: boolean }) {
   return (
-    <div className={`aspect-[2/3] overflow-hidden rounded-sm bg-bg-tertiary shadow-book ${className}`}>
-      {book.coverUrl && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={book.coverUrl.replace("-L.jpg", "-M.jpg")}
-          alt={`Cover of ${book.title} by ${book.author}`}
-          width={180}
-          height={270}
-          loading={eager ? "eager" : "lazy"}
-          decoding="async"
-          className="h-full w-full object-cover"
-        />
-      )}
-    </div>
+    <BookCover
+      book={{ title: book.title, authors: [book.author], coverUrl: book.coverUrl }}
+      size={size}
+      priority={eager}
+      decorative={decorative}
+    />
   );
 }
 
@@ -57,10 +51,10 @@ function ShowcaseCard() {
     <div className="relative mx-auto w-full max-w-md lg:max-w-none">
       {/* Floating cover stack */}
       <div aria-hidden className="absolute -top-6 -right-2 hidden w-24 rotate-6 sm:block lg:-right-6 lg:w-28">
-        <Cover book={SHOWCASE[3]} eager />
+        <Cover book={SHOWCASE[3]} eager decorative />
       </div>
       <div aria-hidden className="absolute -bottom-8 -left-4 hidden w-20 -rotate-6 sm:block lg:-left-10 lg:w-24">
-        <Cover book={SHOWCASE[4]} eager />
+        <Cover book={SHOWCASE[4]} eager decorative />
       </div>
 
       <figure className="relative rounded-2xl border border-border-subtle bg-surface p-5 shadow-lg sm:p-6">
@@ -73,7 +67,7 @@ function ShowcaseCard() {
           {reading.map((b, i) => (
             <li key={b.title} className="flex items-center gap-4">
               <div className="w-12 shrink-0">
-                <Cover book={b} eager />
+                <Cover book={b} size="xs" eager decorative />
               </div>
               <div className="min-w-0 flex-1">
                 <p className="truncate font-heading font-medium">{b.title}</p>
