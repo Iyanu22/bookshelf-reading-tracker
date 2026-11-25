@@ -156,16 +156,31 @@ export function BookSearch() {
 
   const loadMore = async () => {
     if (!results) return;
+    // Same guard as `run`: if a new search starts while this page loads, drop the stale page.
+    const id = requestId.current;
     setLoadingMore(true);
     try {
       const next = await fetchResults(urlQuery.trim(), results.page + 1);
-      setResults({ ...next, books: [...results.books, ...next.books.filter((b) => !results.books.some((r) => r.key === b.key))] });
+      if (id !== requestId.current) return;
+      setResults((prev) =>
+        prev ? { ...next, books: [...prev.books, ...next.books.filter((b) => !prev.books.some((r) => r.key === b.key))] } : next,
+      );
     } catch (err) {
-      setError(err as SearchError);
+      if (id === requestId.current) setError(err as SearchError);
     } finally {
       setLoadingMore(false);
     }
   };
+
+  // One short sentence for screen readers. The result list itself stays out of the
+  // live region, or every search would read all 24 books aloud.
+  const status = loading
+    ? "Searching…"
+    : results && !error
+      ? results.books.length === 0
+        ? `No books found for “${urlQuery}”.`
+        : `Showing ${results.books.length} of ${results.total.toLocaleString()} ${results.total === 1 ? "result" : "results"} for “${urlQuery}”.`
+      : "";
 
   const errorCopy = error ? (ERROR_COPY[error.code] ?? ERROR_COPY.unavailable) : null;
 
@@ -210,12 +225,12 @@ export function BookSearch() {
         </button>
       </form>
 
-      <div aria-live="polite" aria-busy={loading} className="mt-2">
+      <p role="status" className="sr-only">
+        {status}
+      </p>
+      <div aria-busy={loading} className="mt-2">
         {loading ? (
-          <>
-            <p className="sr-only">Searching…</p>
-            <ResultsSkeleton />
-          </>
+          <ResultsSkeleton />
         ) : errorCopy ? (
           <div role="alert" className="mt-6 rounded-xl border border-border bg-surface p-6">
             <h2 className="text-lg font-semibold">{errorCopy.title}</h2>
