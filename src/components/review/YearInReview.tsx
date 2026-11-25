@@ -331,6 +331,12 @@ export function YearInReview() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
+      // Story shortcuts must not hijack native keyboard behaviour: leave fields alone,
+      // and let Space activate a focused button or link as usual.
+      const target = e.target instanceof Element ? e.target : null;
+      if (target?.closest("input, textarea, select, [contenteditable='true']")) return;
+      if (e.key === " " && target?.closest("button, a, summary, [role='button']")) return;
       if (e.key === "ArrowRight" || e.key === " " || e.key === "PageDown") {
         e.preventDefault();
         go(index + 1);
