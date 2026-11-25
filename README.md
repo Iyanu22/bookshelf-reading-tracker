@@ -4,7 +4,7 @@ A personal reading tracker where you search for books, organize them into shelve
 
 **Live URL:** [bookshelf-reading-tracker.vercel.app/guest](https://bookshelf-reading-tracker.vercel.app/guest) · **Repo:** [Iyanu22/bookshelf-reading-tracker](https://github.com/Iyanu22/bookshelf-reading-tracker)
 
-<!-- TODO: add ./screenshot.png once deployed -->
+![The Bookshelf guest library: reading stats, a 2026 goal ring at 90%, and the Currently Reading shelf](./screenshot.jpg)
 
 ---
 
@@ -33,6 +33,7 @@ What you can do:
 | Styling | Tailwind CSS v4 on the brand-kit design tokens, light + dark themes |
 | Charts/Viz | Hand-built SVG/HTML charts (no chart library) |
 | State | Zustand store with optimistic updates and rollback |
+| Testing | Vitest unit tests for stats, progress estimates, library search, Year in Review planning and the store's rollback logic |
 | Icons | Lucide |
 
 ---
@@ -280,6 +281,7 @@ Lighthouse 12, mobile profile (simulated slow 4G), run against the live site on 
 
 ### Areas for Improvement
 
+- Tests cover the logic (stats, progress, search, Year in Review planning, optimistic rollback) but not the UI. Component tests for the progress updater and an end-to-end guest-mode smoke test (Playwright) would be next.
 - Goodreads CSV import (stretch feature) isn't built yet.
 - Bulk actions on shelves (select several books, move or remove) aren't built yet.
 - The Year in Review card could be a generated image for one-tap sharing.
@@ -305,6 +307,9 @@ npm install
 cp .env.example .env.local
 
 npm run dev
+
+# Unit tests
+npm test
 ```
 
 To enable accounts:
