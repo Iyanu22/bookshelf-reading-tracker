@@ -14,7 +14,7 @@
   --color-accent-hover: #8b4f20;
   --color-accent-subtle: #fbf1e8;
 
-  --color-success: #3d7c4f;
+  --color-success: #387349; /* brand #3d7c4f, darkened for WCAG AA on bg-secondary/tertiary */
   --color-warning: #8a6608; /* brand #b8860b, darkened for WCAG AA */
   --color-error: #c0392b;
 

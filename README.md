@@ -2,7 +2,7 @@
 
 A personal reading tracker where you search for books, organize them into shelves, track reading progress, and explore year-in-review statistics.
 
-**Live URL:** _coming soon_ <!-- TODO: add the deployed /guest URL -->
+**Live URL:** [bookshelf-reading-tracker.vercel.app/guest](https://bookshelf-reading-tracker.vercel.app/guest) · **Repo:** [Iyanu22/bookshelf-reading-tracker](https://github.com/Iyanu22/bookshelf-reading-tracker)
 
 <!-- TODO: add ./screenshot.png once deployed -->
 
@@ -29,7 +29,7 @@ What you can do:
 | Database | Supabase Postgres with row-level security |
 | Authentication | Supabase Auth (email + password) via `@supabase/ssr` |
 | Book API | Open Library (search, covers) |
-| Hosting | Vercel <!-- TODO: confirm once deployed --> |
+| Hosting | Vercel |
 | Styling | Tailwind CSS v4 on the brand-kit design tokens, light + dark themes |
 | Charts/Viz | Hand-built SVG/HTML charts (no chart library) |
 | State | Zustand store with optimistic updates and rollback |
@@ -117,10 +117,11 @@ I'd add a "reading session" timer, and support for audiobooks and ebooks measure
 
 ### Other Design Choices
 
-- **Brand-kit colours adjusted for accessibility.** Three tokens failed WCAG AA contrast, so I nudged them while keeping the hue:
+- **Brand-kit colours adjusted for accessibility.** Four tokens failed WCAG AA contrast, so I nudged them while keeping the hue:
   - Light-theme tertiary text: `#8c8278` → `#6e645b`.
   - Accent: `#a8612b` → `#9e5a27` (on the secondary background).
   - Dark-theme tertiary text: `#7a716a` → `#998e83`.
+  - Success green (light theme): `#3d7c4f` → `#387349`, found by Lighthouse on the live landing page.
 - **Missing covers.** Open Library returns an invisible 1×1 image for missing covers. I request covers with `?default=false` so a missing cover becomes a real 404. The app then shows a styled "book spine" placeholder in one of seven muted colours, chosen deterministically from the title, so it sits naturally among real covers.
 - **Duplicate editions.** Books are matched across editions with a loose title and author signature, so adding a second edition of a book you already have shows "In your library, on Read" instead of creating a duplicate.
 - **ISBN search.** A bare ISBN, with or without dashes, is detected and turned into an exact ISBN lookup.
@@ -292,8 +293,8 @@ Most of the work in a chart is deciding what *not* to show: one axis, one emphas
 ## Running Locally
 
 ```bash
-git clone <!-- TODO: repo URL -->
-cd personal-reading-list
+git clone https://github.com/Iyanu22/bookshelf-reading-tracker.git
+cd bookshelf-reading-tracker
 npm install
 
 # Optional: without these the app runs in guest mode only
