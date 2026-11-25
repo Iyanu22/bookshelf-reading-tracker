@@ -185,6 +185,10 @@ export function ShelfView() {
   const urlQuery = useSearchParams().get("q") ?? "";
   const [query, setQuery] = useState(urlQuery);
   const [seededFrom, setSeededFrom] = useState(urlQuery);
+  // Deliberately adjusted during render, not in an effect: React's recommended pattern for
+  // "adjusting state when a prop changes" (react.dev/learn/you-might-not-need-an-effect).
+  // The guard makes it run once per URL change, and React re-renders before painting,
+  // whereas an effect would first paint the stale query.
   if (urlQuery !== seededFrom) {
     setSeededFrom(urlQuery);
     setQuery(urlQuery);
