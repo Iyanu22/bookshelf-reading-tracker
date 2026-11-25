@@ -179,7 +179,9 @@ export function computeYearStats(entries: LibraryEntry[], events: ProgressEvent[
     yearDays.push({ date: key, pages: p, level: 0, future: midnight > now });
   }
   volumes.sort((a, b) => a - b);
-  const q = (f: number) => volumes[Math.min(volumes.length - 1, Math.floor(volumes.length * f))] ?? 0;
+  // Nearest-rank quartiles over 0..n-1, so the busiest days always land in the darkest step
+  // (indexing by n * f put the top cut-off *at* the maximum when there were few reading days).
+  const q = (f: number) => volumes[Math.floor((volumes.length - 1) * f)] ?? 0;
   const [q1, q2, q3] = [q(0.25), q(0.5), q(0.75)];
   let streak = 0;
   let longestStreak = 0;
