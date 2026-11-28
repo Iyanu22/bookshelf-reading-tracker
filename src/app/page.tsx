@@ -85,13 +85,13 @@ function ShowcaseCard() {
         <div className="mt-6 flex items-center gap-4 rounded-xl bg-bg-secondary p-4">
           <svg viewBox="0 0 36 36" className="size-14 shrink-0 -rotate-90" aria-hidden>
             <circle cx="18" cy="18" r="15" fill="none" strokeWidth="4" className="stroke-bg-tertiary" />
-            <circle cx="18" cy="18" r="15" fill="none" strokeWidth="4" strokeLinecap="round" strokeDasharray="94.2" strokeDashoffset="25" className="stroke-progress" />
+            <circle cx="18" cy="18" r="15" fill="none" strokeWidth="4" strokeLinecap="round" strokeDasharray="94.2" strokeDashoffset="9.4" className="stroke-progress" />
           </svg>
           <div>
             <p className="font-heading text-lg">
-              <span className="font-bold">18</span> of 24 books
+              <span className="font-bold">18</span> of 20 books
             </p>
-            <p className="text-sm text-success">↗ Ahead of pace by 1 book</p>
+            <p className="text-sm text-accent">On track · 2 books to go</p>
           </div>
         </div>
       </figure>
@@ -202,7 +202,7 @@ export default function LandingPage() {
 
       <footer className="border-t border-border-subtle">
         <div className="mx-auto flex max-w-page flex-col gap-2 px-5 py-8 text-sm text-text-tertiary sm:flex-row sm:justify-between sm:px-8">
-          <p>Bookshelf — a Frontend Mentor product challenge.</p>
+          <p>Bookshelf — built for the Frontend Mentor Personal Reading List challenge.</p>
           <p>
             Book data from{" "}
             <a href="https://openlibrary.org" className="underline underline-offset-2 hover:text-text-primary">

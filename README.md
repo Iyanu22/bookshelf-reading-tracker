@@ -1,6 +1,6 @@
-# Bookshelf — Iyanuoluwa Olajide
+# Bookshelf (Personal Reading List challenge) — Iyanuoluwa Olajide
 
-A personal reading tracker where you search for books, organize them into shelves, track reading progress, and explore year-in-review statistics.
+My solution to the Frontend Mentor **Personal Reading List** product challenge, published as **Bookshelf**: a personal reading tracker where you search for books, organize them into shelves, track reading progress, and explore year-in-review statistics.
 
 **Live URL:** [bookshelf-reading-tracker.vercel.app/guest](https://bookshelf-reading-tracker.vercel.app/guest) · **Repo:** [Iyanu22/bookshelf-reading-tracker](https://github.com/Iyanu22/bookshelf-reading-tracker)
 
@@ -330,4 +330,4 @@ To rebuild the curated Discover lists: `node scripts/build-curated-lists.mjs` (a
 
 ## Acknowledgments
 
-Built as a [Frontend Mentor Product Challenge](https://www.frontendmentor.io). Book data and covers from [Open Library](https://openlibrary.org).
+Built for the [Frontend Mentor](https://www.frontendmentor.io) Personal Reading List product challenge. Book data and covers from [Open Library](https://openlibrary.org).
